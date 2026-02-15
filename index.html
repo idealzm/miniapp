@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Marzban VPN</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body { background: #0f172a; color: #e2e8f0; }
+    .qr-container { background: white; padding: 12px; border-radius: 12px; }
+  </style>
+</head>
+<body class="min-h-screen p-4">
+  <div class="max-w-md mx-auto">
+    <div id="loading" class="text-center py-12">Загрузка...</div>
+
+    <!-- Главный экран -->
+    <div id="main-screen" class="hidden">
+      <h1 class="text-3xl font-bold mb-6 text-center">Marzban VPN</h1>
+
+      <div id="profile-card" class="bg-slate-800 rounded-2xl p-6 mb-6"></div>
+
+      <div class="flex gap-3">
+        <button onclick="showServers()" 
+                class="flex-1 bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl font-medium">
+          🌐 Сервер
+        </button>
+        <button onclick="refreshProfile()" 
+                class="flex-1 bg-slate-700 hover:bg-slate-600 py-4 rounded-2xl font-medium">
+          🔄 Обновить
+        </button>
+      </div>
+    </div>
+
+    <!-- Экран выбора сервера -->
+    <div id="servers-screen" class="hidden">
+      <div class="flex items-center gap-3 mb-6">
+        <button onclick="backToMain()" class="text-3xl">←</button>
+        <h2 class="text-2xl font-bold">Выберите протокол</h2>
+      </div>
+      <div id="protocols-list" class="grid grid-cols-2 gap-3"></div>
+    </div>
+
+    <!-- Выбор inbound -->
+    <div id="inbounds-screen" class="hidden">
+      <div class="flex items-center gap-3 mb-6">
+        <button onclick="backToProtocols()" class="text-3xl">←</button>
+        <h2 class="text-2xl font-bold" id="current-protocol"></h2>
+      </div>
+      <div id="inbounds-list" class="grid grid-cols-1 gap-3"></div>
+    </div>
+
+    <!-- QR + ссылка -->
+    <div id="qr-screen" class="hidden">
+      <div class="flex items-center gap-3 mb-6">
+        <button onclick="backToMain()" class="text-3xl">←</button>
+        <h2 class="text-2xl font-bold">Ваша конфигурация</h2>
+      </div>
+      <div class="bg-slate-800 rounded-3xl p-6 text-center">
+        <div id="qr-container" class="qr-container mx-auto w-64 h-64 mb-6"></div>
+        <div id="sub-url" class="break-all text-xs bg-slate-900 p-4 rounded-2xl text-left font-mono"></div>
+      </div>
+      <button onclick="copyLink()" 
+              class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 py-4 rounded-2xl font-medium">
+        📋 Скопировать ссылку
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.ready();
+
+    const API = "https://your-backend-domain.com";   // ← замени на свой
+
+    async function apiCall(endpoint, method = "GET", body = null) {
+      const headers = {
+        "X-Telegram-Init-Data": tg.initData,
+        "Content-Type": "application/json"
+      };
+      const res = await fetch(API + endpoint, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : null
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
+
+    async function loadProfile() {
+      try {
+        const data = await apiCall("/api/profile");
+        document.getElementById("loading").classList.add("hidden");
+        document.getElementById("main-screen").classList.remove("hidden");
+
+        const card = document.getElementById("profile-card");
+        if (!data.has_config) {
+          card.innerHTML = `
+            <div class="text-center py-8">
+              <p class="text-xl mb-4">У вас пока нет конфигурации</p>
+              <button onclick="showServers()" class="bg-blue-600 px-8 py-3 rounded-2xl">Создать сейчас →</button>
+            </div>`;
+          return;
+        }
+
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-emerald-400 text-sm">ID: <span class="font-mono">${data.tg_id}</span></p>
+              <p class="text-2xl font-semibold mt-2">${data.full_name}</p>
+            </div>
+            <div class="text-right">
+              <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm">${data.status}</span>
+            </div>
+          </div>
+          <div class="mt-6 space-y-3 text-sm">
+            <div><span class="text-slate-400">Протоколы:</span><br>${data.protocols}</div>
+            <div><span class="text-slate-400">Трафик:</span> ${data.traffic}</div>
+            <div><span class="text-slate-400">Действует до:</span> ${data.expire}</div>
+          </div>
+        `;
+
+        if (data.subscription_url) {
+          showQR(data.subscription_url);
+        }
+      } catch (e) {
+        alert("Ошибка загрузки: " + e.message);
+      }
+    }
+
+    function showQR(url) {
+      document.getElementById("main-screen").classList.add("hidden");
+      document.getElementById("qr-screen").classList.remove("hidden");
+
+      document.getElementById("sub-url").textContent = url;
+
+      const container = document.getElementById("qr-container");
+      container.innerHTML = "";
+      new QRCode(container, {
+        text: url,
+        width: 256,
+        height: 256,
+        colorDark: "#000000",
+        colorLight: "#ffffff"
+      });
+    }
+
+    async function showServers() {
+      document.getElementById("main-screen").classList.add("hidden");
+      document.getElementById("servers-screen").classList.remove("hidden");
+
+      const data = await apiCall("/api/inbounds");
+      const container = document.getElementById("protocols-list");
+      container.innerHTML = "";
+
+      Object.keys(data).forEach(proto => {
+        const btn = document.createElement("button");
+        btn.className = "bg-slate-700 hover:bg-slate-600 py-6 rounded-2xl text-lg font-medium";
+        btn.textContent = proto.toUpperCase();
+        btn.onclick = () => selectProtocol(proto, data[proto]);
+        container.appendChild(btn);
+      });
+    }
+
+    let currentProtocol = "";
+    function selectProtocol(proto, inbounds) {
+      currentProtocol = proto;
+      document.getElementById("servers-screen").classList.add("hidden");
+      document.getElementById("inbounds-screen").classList.remove("hidden");
+      document.getElementById("current-protocol").textContent = proto.toUpperCase();
+
+      const container = document.getElementById("inbounds-list");
+      container.innerHTML = "";
+
+      inbounds.forEach(tag => {
+        const btn = document.createElement("button");
+        btn.className = "bg-slate-700 hover:bg-emerald-600 py-5 rounded-2xl text-left px-6";
+        btn.textContent = tag;
+        btn.onclick = () => applyConfig(proto, tag);
+        container.appendChild(btn);
+      });
+    }
+
+    async function applyConfig(protocol, inbound) {
+      try {
+        const res = await apiCall("/api/set-config", "POST", { protocol, inbound });
+        alert(`Конфигурация ${res.action} успешно!`);
+        backToMain();
+        loadProfile();   // перезагружаем профиль
+      } catch (e) {
+        alert("Ошибка: " + e.message);
+      }
+    }
+
+    function backToMain() {
+      document.querySelectorAll("#servers-screen, #inbounds-screen, #qr-screen").forEach(el => el.classList.add("hidden"));
+      document.getElementById("main-screen").classList.remove("hidden");
+    }
+
+    function backToProtocols() {
+      document.getElementById("inbounds-screen").classList.add("hidden");
+      document.getElementById("servers-screen").classList.remove("hidden");
+    }
+
+    function copyLink() {
+      const url = document.getElementById("sub-url").textContent;
+      navigator.clipboard.writeText(url);
+      alert("Ссылка скопирована!");
+    }
+
+    function refreshProfile() {
+      document.getElementById("main-screen").classList.add("hidden");
+      document.getElementById("loading").classList.remove("hidden");
+      loadProfile();
+    }
+
+    // Запуск
+    window.onload = () => {
+      loadProfile();
+    };
+  </script>
+</body>
+</html>
