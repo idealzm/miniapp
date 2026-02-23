@@ -507,12 +507,10 @@ window.onclick = function(event) {
 };
 
 // Close modal on close button click
-document.addEventListener('DOMContentLoaded', () => {
-    const closeBtn = document.querySelector('.modal-close');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeInstruction);
-    }
-});
+const closeBtn = document.querySelector('.modal-close');
+if (closeBtn) {
+    closeBtn.addEventListener('click', closeInstruction);
+}
 
 // Keyboard navigation
 document.addEventListener('keydown', (e) => {
