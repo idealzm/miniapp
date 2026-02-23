@@ -23,10 +23,13 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
+    /* Предотвращение зума при тапе на iOS */
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
 }
 
 .container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -34,14 +37,14 @@ body {
 /* Header */
 .header {
     text-align: center;
-    padding: 50px 0 30px;
+    padding: 60px 0 30px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 24px;
     position: relative;
 }
 
 .header h1 {
-    font-size: 24px;
+    font-size: 28px;
     margin-bottom: 8px;
     background: linear-gradient(135deg, var(--accent), #64b5f6);
     -webkit-background-clip: text;
@@ -57,7 +60,7 @@ body {
 /* Snow toggle button */
 .snow-toggle {
     position: absolute;
-    top: 5px;
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 40px;
@@ -194,6 +197,7 @@ code {
 /* Cards Grid */
 .cards-grid {
     display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -376,10 +380,11 @@ code {
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: 1000;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px;
 }
 
 .modal.active {
@@ -392,14 +397,15 @@ code {
     border-radius: 16px;
     max-width: 500px;
     width: 100%;
-    max-height: 80vh;
+    max-height: calc(100vh - 32px);
     display: flex;
     flex-direction: column;
     position: relative;
     animation: modalIn 0.3s ease;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    padding: 20px;
-    gap: 16px;
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
 }
 
 .modal-content.closing {
@@ -417,9 +423,9 @@ code {
     align-items: center;
     padding: 16px 20px;
     background: var(--bg-secondary);
-    border: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     flex-shrink: 0;
-    border-radius: 12px;
+    border-radius: 16px 16px 0 0;
     position: relative;
 }
 
@@ -429,13 +435,15 @@ code {
     font-weight: 700;
     color: var(--text-primary);
     letter-spacing: 0.3px;
+    text-align: center;
+    padding-right: 36px;
 }
 
 .modal-close {
     width: 36px;
     height: 36px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
+    background: transparent;
+    border: none;
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -450,22 +458,21 @@ code {
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
+    padding: 0;
 }
 
 .modal-close:hover {
     background: var(--bg-primary);
     color: var(--text-primary);
-    border-color: var(--accent);
-    transform: translateY(-50%) scale(1.05);
 }
 
 .modal-body {
     padding: 20px;
     overflow-y: auto;
+    overflow-x: hidden;
     flex: 1;
     background: var(--bg-secondary);
-    border-radius: 12px;
-    border: 1px solid var(--border);
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-body h4 {
@@ -613,29 +620,133 @@ code {
     background: var(--text-secondary);
 }
 
-/* Responsive */
-@media (max-width: 480px) {
+/* Tablet Responsive (768px) */
+@media (max-width: 768px) {
     .container {
         padding: 16px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .subtitle {
+        font-size: 13px;
+    }
+
+    .section h2 {
+        font-size: 18px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .card-header h3 {
+        font-size: 17px;
+    }
+
+    .card p {
+        font-size: 14px;
+    }
+
+    .modal {
+        padding: 16px;
+    }
+
+    .modal-content {
+        max-width: 600px;
+    }
+}
+
+/* Mobile Responsive (480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 12px;
+    }
+
+    .header {
+        padding: 50px 0 24px;
     }
 
     .header h1 {
         font-size: 20px;
     }
 
+    .subtitle {
+        font-size: 12px;
+    }
+
     .snow-toggle {
         width: 36px;
         height: 36px;
-        top: 5px;
         font-size: 18px;
+    }
+
+    .section h2 {
+        font-size: 16px;
+        padding: 12px 16px;
+    }
+
+    .cards-grid {
+        gap: 12px;
+    }
+
+    .card {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .card-header h3 {
+        font-size: 16px;
+        width: 100%;
+    }
+
+    .country-badge {
+        font-size: 18px;
+        padding: 3px 6px;
+    }
+
+    .country-badge .flag {
+        font-size: 16px;
+    }
+
+    .country-badge .code {
+        font-size: 10px;
+    }
+
+    .card p {
+        font-size: 13px;
+        margin-bottom: 12px;
     }
 
     .card-actions {
         flex-direction: column;
+        gap: 8px;
     }
 
     .btn {
         width: 100%;
+        padding: 12px 16px;
+        font-size: 14px;
+        /* Минимальная тач-зона 44px */
+        min-height: 44px;
+    }
+
+    .new-badge {
+        font-size: 10px;
+        padding: 3px 8px;
     }
 }
 
@@ -644,28 +755,62 @@ code {
     to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Modal responsive */
+/* Modal Tablet Responsive (768px) */
+@media (max-width: 768px) {
+    .modal {
+        padding: 12px;
+    }
+
+    .modal-content {
+        max-width: 600px;
+        max-height: calc(100vh - 24px);
+    }
+
+    .modal-header {
+        padding: 14px 16px;
+    }
+
+    .modal-header h3 {
+        font-size: 17px;
+    }
+
+    .modal-body {
+        padding: 16px;
+    }
+
+    .modal-body h4 {
+        font-size: 15px;
+    }
+
+    .platforms-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+/* Modal Mobile Responsive (480px) */
 @media (max-width: 480px) {
     .modal {
-        padding: 10px;
+        padding: 0;
         align-items: flex-end;
     }
 
     .modal-content {
         max-width: 100%;
-        max-height: 90vh;
+        max-height: 85vh;
         border-radius: 16px 16px 0 0;
-        padding: 16px;
-        gap: 12px;
+        padding: 0;
+        gap: 0;
     }
 
     .modal-header {
-        padding: 12px 16px;
-        border-radius: 10px;
+        padding: 14px 16px;
+        border-radius: 16px 16px 0 0;
     }
 
     .modal-header h3 {
         font-size: 16px;
+        padding-right: 32px;
     }
 
     .modal-close {
@@ -677,8 +822,7 @@ code {
 
     .modal-body {
         padding: 16px;
-        border-radius: 10px;
-        font-size: 14px;
+        max-height: calc(85vh - 60px);
     }
 
     .modal-body h4 {
@@ -700,17 +844,35 @@ code {
     }
 
     .platform-btn {
-        padding: 10px 14px;
+        padding: 12px 14px;
         font-size: 14px;
+        min-height: 44px;
     }
 
     .btn-footer {
-        padding: 12px 16px;
+        padding: 14px 16px;
         font-size: 14px;
+        min-height: 48px;
     }
 
     .instruction-footer-text {
         font-size: 14px;
         margin: 12px 0 10px;
+    }
+}
+
+/* Large screens (optional - для очень больших экранов) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 960px;
+    }
+
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+    }
+
+    .header h1 {
+        font-size: 32px;
     }
 }
