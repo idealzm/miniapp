@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Обход блокировок</title>
+        <link rel="stylesheet" href="styles.css" />
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <header class="header">
+                <h1>🔓 Способы обхода блокировок</h1>
+                <p class="subtitle">
+                    Бесплатно и с простой установкой
+                </p>
+                <button id="snowToggle" class="snow-toggle" title="Включить/выключить снег">❄️</button>
+            </header>
+
+            <main class="content">
+                <!-- VPN Section -->
+                <section id="vpn" class="section active">
+                    <h2>Работает прямо сейчас</h2>
+                    <div class="cards-grid" id="cardsContainer">
+                        <!-- Карточки загружаются из data.json -->
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <div id="snowContainer" class="snow-container"></div>
+        <div id="confettiContainer" class="confetti-container"></div>
+
+        <!-- Modal for instruction -->
+        <div id="instructionModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="instructionTitle">Инструкция</h3>
+                    <button class="modal-close" onclick="closeInstruction()">&times;</button>
+                </div>
+                <div class="modal-body" id="instructionBody"></div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

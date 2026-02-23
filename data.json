@@ -1,0 +1,80 @@
+{
+  "cards": [
+    {
+      "id": "amnezia_wg",
+      "title": "NEW! AmneziaWG",
+      "description": "Простой и быстрый VPN для любых устройств.",
+      "country": "DE",
+      "buttonText": "Инструкция",
+      "buttonAction": "openInstruction",
+      "instruction": {
+        "title": "Инструкция по настройке",
+        "steps": [
+          {
+            "title": "Шаг 1: Установка ПО",
+            "type": "links",
+            "text": "Выберите вашу платформу:",
+            "links": [
+              {"name": "Windows", "url": "https://www.dropbox.com/scl/fi/i0dgt8rws25u4wp0xs3qu/amneziawg-amd64-1.0.3.msi?rlkey=mxj0b13zuclmb9si4humv07lz&e=1&st=vmqvri4p&dl=1"},
+              {"name": "macOS", "url": "https://apps.apple.com/ru/app/amneziawg/id6478942365"},
+              {"name": "Android", "url": "https://play.google.com/store/apps/details?id=org.amnezia.awg&hl=ru"},
+              {"name": "iOS", "url": "https://apps.apple.com/ru/app/amneziawg/id6478942365"}
+            ]
+          },
+          {
+            "title": "Шаг 2: Подготовка файла конфигурации",
+            "type": "links",
+            "text": "Скачайте файл по ссылке ниже:",
+            "links": [
+              {"name": "Файл конфигурации", "url": "https://www.dropbox.com/scl/fi/djru9q4p6dmm599898f5g/vpnforall404.conf?rlkey=3xh3op2xiritssjegfcioov0t&st=mgaeyxy7&dl=1"}
+            ]
+          },
+          {
+            "title": "Шаг 3: Подключение",
+            "type": "list",
+            "items": [
+              "Откройте приложение `AmneziaWG` на вашем устройстве.",
+              "Нажмите на кнопку `«Добавить туннель»` \nили `«Импорт туннелей из файла»`.",
+              "Выберите скачанный ранее файл.",
+              "Нажмите кнопку `«Подключить»` или на переключатель."
+            ]
+          }
+        ],
+        "footer": {
+          "text": "",
+          "buttonText": "✅ Готово!"
+        }
+      }
+    },
+    {
+      "id": "telegram_proxy",
+      "title": "Telegram Proxy",
+      "description": "Настройка внутри приложения Telegram для восстановления работы",
+      "country": "RU",
+      "buttonText": "Инструкция",
+      "buttonAction": "openInstruction",
+      "instruction": {
+        "title": "Инструкция по настройке",
+        "steps": [
+          {
+            "title": "Шаг 1",
+            "type": "links",
+            "text": "Перейдите по ссылке ниже:",
+            "links": [
+              {"name": "Ссылка для подключения", "link": "https://t.me/proxy?server=94.232.43.80&port=443&secret=8c1969fda50eae4695e7a0fb5bb3d2ce"}
+            ]
+          },
+          {
+            "title": "Шаг 2",
+            "type": "text",
+            "text": "Нажмите на кнопку `«Подключиться»` в открывшемся окне."
+          }
+        ],
+        "footer": {
+          "text": "Готово!",
+          "buttonText": "✅ Закрыть"
+        }
+      }
+    }
+  ]
+}
