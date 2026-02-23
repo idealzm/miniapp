@@ -76,10 +76,6 @@ function getCountryInfo(countryCode) {
 }
 
 // Snow effect
-let snowInterval;
-let isSnowing = false;
-
-// Confetti effect
 let confettiAnimation;
 
 // Create confetti from top of screen
@@ -301,10 +297,10 @@ async function loadCards() {
                 ? `<span class="new-badge">NEW!</span> ${escapeHtml(card.title.replace('NEW! ', ''))}`
                 : escapeHtml(card.title);
 
-            // Country badge
+            // Country badge (только флаг)
             const countryInfo = getCountryInfo(card.country);
             const countryBadge = countryInfo
-                ? `<span class="country-badge" title="Страна: ${countryInfo.code}"><span class="flag">${countryInfo.flag}</span><span class="code">${countryInfo.code}</span></span>`
+                ? `<span class="country-badge" title="Страна: ${countryInfo.code}"><span class="flag">${countryInfo.flag}</span></span>`
                 : '';
 
             // Build button HTML
