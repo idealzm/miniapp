@@ -76,6 +76,8 @@ function getCountryInfo(countryCode) {
 }
 
 // Snow effect
+let snowInterval;
+let isSnowing = false;
 let confettiAnimation;
 
 // Create confetti from top of screen
