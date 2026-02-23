@@ -61,7 +61,7 @@
             "type": "links",
             "text": "Перейдите по ссылке ниже:",
             "links": [
-              {"name": "Ссылка для подключения", "link": "https://t.me/proxy?server=94.232.43.80&port=443&secret=8c1969fda50eae4695e7a0fb5bb3d2ce"}
+              {"name": "Ссылка для подключения", "url": "https://t.me/proxy?server=94.232.43.80&port=443&secret=8c1969fda50eae4695e7a0fb5bb3d2ce"}
             ]
           },
           {
