@@ -1,5 +1,6 @@
 // Telegram Web App initialization
-const tg = window.Telegram.WebApp || {};
+// Safe check for Telegram WebApp - works in both Telegram and regular browsers
+const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
 
 // Store instructions data
 let instructionsData = {};
@@ -224,61 +225,65 @@ function parseMarkdown(text) {
 }
 
 // Initialize Telegram Web App
-document.addEventListener('DOMContentLoaded', async () => {
-    // Check if running inside Telegram
-    const isTelegram = tg && tg.initParams;
-    
-    if (tg && tg.expand) {
-        tg.expand();
-    }
+// Check if running inside Telegram
+const isTelegram = tg && tg.initParams;
 
-    // Set header color (only in Telegram)
-    if (tg && tg.setHeaderColor) {
-        tg.setHeaderColor('#0f0f0f');
-    }
+if (tg && tg.expand && typeof tg.expand === 'function') {
+    tg.expand();
+}
 
-    // Initialize snow toggle button
-    const snowToggle = document.getElementById('snowToggle');
-    if (snowToggle) {
-        snowToggle.addEventListener('click', toggleSnow);
+// Set header color (only in Telegram)
+if (tg && tg.setHeaderColor && typeof tg.setHeaderColor === 'function') {
+    tg.setHeaderColor('#0f0f0f');
+}
 
-        // Load saved state
-        try {
-            if (loadSnowState()) {
-                startSnow();
-            }
-        } catch (e) {
-            // localStorage may be unavailable
-            console.warn('localStorage not available:', e);
+// Initialize snow toggle button
+const snowToggle = document.getElementById('snowToggle');
+if (snowToggle) {
+    snowToggle.addEventListener('click', toggleSnow);
+
+    // Load saved state
+    try {
+        if (loadSnowState()) {
+            startSnow();
         }
+    } catch (e) {
+        // localStorage may be unavailable
+        console.warn('localStorage not available:', e);
     }
+}
 
-    // Load cards from JSON
-    await loadCards();
-});
+// Load cards from JSON
+loadCards();
 
 // Load cards from data.json
 async function loadCards() {
+    const container = document.getElementById('cardsContainer');
+    
     try {
-        const response = await fetch('data.json', { 
+        const response = await fetch('data.json', {
             cache: 'no-cache',
             headers: { 'Accept': 'application/json' }
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
-        const data = await response.json();
 
-        const container = document.getElementById('cardsContainer');
+        let data;
+        try {
+            data = await response.json();
+        } catch (jsonError) {
+            throw new Error('Invalid JSON format in data.json');
+        }
+
         if (!container) {
             console.error('cardsContainer not found');
             return;
         }
         container.innerHTML = '';
 
-        if (!data.cards || !Array.isArray(data.cards)) {
+        if (!data || !data.cards || !Array.isArray(data.cards)) {
             container.innerHTML = '<p style="color: var(--text-secondary);">Ошибка: неверный формат данных</p>';
             return;
         }
@@ -334,18 +339,17 @@ async function loadCards() {
         });
     } catch (error) {
         console.error('Error loading cards:', error);
-        const container = document.getElementById('cardsContainer');
         if (container) {
-            container.innerHTML = '<p style="color: var(--text-secondary);">Ошибка загрузки данных. Проверьте консоль для деталей.</p>';
+            container.innerHTML = '<p style="color: var(--text-secondary);">Ошибка загрузки данных</p>';
         }
     }
 }
 
 // Send data to Telegram bot
 function sendData(data) {
-    if (tg && tg.sendData) {
+    if (tg && tg.sendData && typeof tg.sendData === 'function') {
         tg.sendData(data);
-        if (tg.HapticFeedback) {
+        if (tg.HapticFeedback && typeof tg.HapticFeedback.notificationOccurred === 'function') {
             tg.HapticFeedback.notificationOccurred('success');
         }
     } else {
@@ -441,7 +445,7 @@ function openInstruction(cardId) {
         snowContainer.classList.add('dimmed');
     }
 
-    if (tg && tg.HapticFeedback) {
+    if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
         tg.HapticFeedback.impactOccurred('light');
     }
 }
@@ -449,11 +453,11 @@ function openInstruction(cardId) {
 // Finish instruction with confetti
 function finishInstruction() {
     startConfetti();
-    
-    if (tg && tg.HapticFeedback) {
+
+    if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.notificationOccurred === 'function') {
         tg.HapticFeedback.notificationOccurred('success');
     }
-    
+
     setTimeout(() => {
         closeInstruction();
     }, 500);
@@ -484,7 +488,7 @@ function closeInstruction() {
             snowContainer.classList.remove('dimmed');
         }
 
-        if (tg && tg.HapticFeedback) {
+        if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
             tg.HapticFeedback.impactOccurred('light');
         }
     }, 300);
