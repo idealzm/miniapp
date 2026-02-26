@@ -487,18 +487,48 @@ if (closeBtn) {
 }
 
 // Блокировка прокрутки вне модального окна
-const modal = document.getElementById('instructionModal');
-if (modal) {
-    modal.addEventListener('touchmove', (e) => {
-        // Разрешаем прокрутку только внутри modal-body
-        if (!e.target.closest('.modal-body')) {
+const modalEl = document.getElementById('instructionModal');
+let touchStartY = 0;
+let touchEndY = 0;
+
+if (modalEl) {
+    modalEl.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    modalEl.addEventListener('touchmove', (e) => {
+        touchEndY = e.touches[0].clientY;
+        const modalBody = e.target.closest('.modal-body');
+        
+        // Если касание не внутри modal-body - блокируем
+        if (!modalBody) {
+            e.preventDefault();
+            return;
+        }
+        
+        // Если modal-body не скроллится (достигнут край) - блокируем
+        const atTop = modalBody.scrollTop === 0;
+        const atBottom = modalBody.scrollTop + modalBody.clientHeight >= modalBody.scrollHeight;
+        
+        if ((atTop && touchEndY > touchStartY) || (atBottom && touchEndY < touchStartY)) {
             e.preventDefault();
         }
     }, { passive: false });
 
-    modal.addEventListener('wheel', (e) => {
-        // Разрешаем прокрутку только внутри modal-body
-        if (!e.target.closest('.modal-body')) {
+    modalEl.addEventListener('wheel', (e) => {
+        const modalBody = e.target.closest('.modal-body');
+        
+        // Если касание не внутри modal-body - блокируем
+        if (!modalBody) {
+            e.preventDefault();
+            return;
+        }
+        
+        // Если modal-body не скроллится (достигнут край) - блокируем
+        const atTop = modalBody.scrollTop === 0;
+        const atBottom = modalBody.scrollTop + modalBody.clientHeight >= modalBody.scrollHeight;
+        
+        if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
             e.preventDefault();
         }
     }, { passive: false });
