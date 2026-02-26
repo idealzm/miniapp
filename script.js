@@ -13,73 +13,16 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Country flags mapping
-const countryFlags = {
-    'DE': '🇩🇪',
-    'US': '🇺🇸',
-    'GB': '🇬🇧',
-    'FR': '🇫🇷',
-    'IT': '🇮🇹',
-    'ES': '🇪🇸',
-    'NL': '🇳🇱',
-    'PL': '🇵🇱',
-    'UA': '🇺🇦',
-    'BY': '🇧🇾',
-    'KZ': '🇰🇿',
-    'TR': '🇹🇷',
-    'AE': '🇦🇪',
-    'SG': '🇸🇬',
-    'JP': '🇯🇵',
-    'KR': '🇰🇷',
-    'IN': '🇮🇳',
-    'BR': '🇧🇷',
-    'CA': '🇨🇦',
-    'AU': '🇦🇺',
-    'RU': '🇷🇺',
-    'FI': '🇫🇮',
-    'SE': '🇸🇪',
-    'NO': '🇳🇴',
-    'DK': '🇩🇰',
-    'CH': '🇨🇭',
-    'AT': '🇦🇹',
-    'BE': '🇧🇪',
-    'PT': '🇵🇹',
-    'GR': '🇬🇷',
-    'CZ': '🇨🇿',
-    'RO': '🇷🇴',
-    'BG': '🇧🇬',
-    'HU': '🇭🇺',
-    'SK': '🇸🇰',
-    'HR': '🇭🇷',
-    'RS': '🇷🇸',
-    'IL': '🇮🇱',
-    'ZA': '🇿🇦',
-    'MX': '🇲🇽',
-    'AR': '🇦🇷',
-    'CL': '🇨🇱',
-    'CO': '🇨🇴',
-    'ID': '🇮🇩',
-    'TH': '🇹🇭',
-    'VN': '🇻🇳',
-    'PH': '🇵🇭',
-    'MY': '🇲🇾',
-    'HK': '🇭🇰',
-    'TW': '🇹🇼',
-    'NZ': '🇳🇿'
-};
-
-// Get country flag and name
+// Get country code
 function getCountryInfo(countryCode) {
     if (!countryCode || typeof countryCode !== 'string') return null;
     const code = countryCode.toUpperCase();
-    const flag = countryFlags[code] || '🌍';
-    return { flag, code };
+    return { code };
 }
 
 // Snow effect
 let snowInterval;
 let isSnowing = false;
-let confettiAnimation;
 
 // Create confetti from top of screen
 function startConfetti() {
@@ -225,9 +168,6 @@ function parseMarkdown(text) {
 }
 
 // Initialize Telegram Web App
-// Check if running inside Telegram
-const isTelegram = tg && tg.initParams;
-
 if (tg && tg.expand && typeof tg.expand === 'function') {
     tg.expand();
 }
@@ -241,6 +181,14 @@ if (tg && tg.setHeaderColor && typeof tg.setHeaderColor === 'function') {
 const snowToggle = document.getElementById('snowToggle');
 if (snowToggle) {
     snowToggle.addEventListener('click', toggleSnow);
+
+    // Set button size to match status badge height
+    const statusBadge = document.querySelector('.status-badge');
+    if (statusBadge) {
+        const badgeHeight = statusBadge.offsetHeight;
+        snowToggle.style.width = badgeHeight + 'px';
+        snowToggle.style.height = badgeHeight + 'px';
+    }
 
     // Load saved state
     try {
@@ -304,10 +252,10 @@ async function loadCards() {
                 ? `<span class="new-badge">NEW!</span> ${escapeHtml(card.title.replace('NEW! ', ''))}`
                 : escapeHtml(card.title);
 
-            // Country badge (только флаг)
+            // Country badge (код страны)
             const countryInfo = getCountryInfo(card.country);
             const countryBadge = countryInfo
-                ? `<span class="country-badge" title="Страна: ${countryInfo.code}"><span class="flag">${countryInfo.flag}</span></span>`
+                ? `<span class="country-badge" title="Страна: ${countryInfo.code}">${countryInfo.code}</span>`
                 : '';
 
             // Build button HTML
@@ -376,19 +324,32 @@ function openInstruction(cardId) {
 
     instructionTitle.textContent = instruction.title || 'Инструкция';
 
+    // Check if download attribute should be applied to all links
+    const globalDownload = instruction.download === true;
+
     let stepsHtml = '';
-    
+
     if (!instruction.steps || !Array.isArray(instruction.steps)) {
         stepsHtml = '<p>Инструкция недоступна</p>';
     } else {
         instruction.steps.forEach((step, index) => {
             if (!step) return;
-            
+
             // Handle links step
             if (step.type === 'links' && step.links) {
                 const linkButtons = step.links
                     .filter(link => link && link.url)
-                    .map(link => `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="platform-btn">${escapeHtml(link.name)}</a>`)
+                    .map(link => {
+                        const url = escapeHtml(link.url);
+                        const name = escapeHtml(link.name);
+                        // Add download attribute for raw GitHub and GitHub Releases links
+                        const isRawGithub = url.includes('raw.githubusercontent.com');
+                        const isGithubRelease = url.includes('/releases/download/');
+                        const hasDownload = globalDownload || link.download || isRawGithub || isGithubRelease;
+                        const downloadAttr = hasDownload ? ` download="${escapeHtml(link.download === true ? '' : link.download)}"` : '';
+                        const targetAttr = hasDownload ? '' : ' target="_blank" rel="noopener noreferrer"';
+                        return `<a href="${url}"${downloadAttr}${targetAttr} class="platform-btn">${name}</a>`;
+                    })
                     .join('');
 
                 stepsHtml += `

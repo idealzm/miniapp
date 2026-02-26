@@ -1,10 +1,10 @@
 {
   "cards": [
     {
-      "id": "amnezia_wg",
+      "id": "FlowStateWG",
       "title": "NEW! AmneziaWG",
       "description": "Простой и быстрый VPN для любых устройств.",
-      "country": "DE",
+      "country": "FI",
       "buttonText": "Инструкция",
       "buttonAction": "openInstruction",
       "instruction": {
@@ -15,7 +15,7 @@
             "type": "links",
             "text": "Выберите вашу платформу:",
             "links": [
-              {"name": "Windows", "url": "https://www.dropbox.com/scl/fi/i0dgt8rws25u4wp0xs3qu/amneziawg-amd64-1.0.3.msi?rlkey=mxj0b13zuclmb9si4humv07lz&e=1&st=vmqvri4p&dl=1"},
+              {"name": "Windows", "url": "http://files.devflowstate.ru/amneziawg.msi"},
               {"name": "macOS", "url": "https://apps.apple.com/ru/app/amneziawg/id6478942365"},
               {"name": "Android", "url": "https://play.google.com/store/apps/details?id=org.amnezia.awg&hl=ru"},
               {"name": "iOS", "url": "https://apps.apple.com/ru/app/amneziawg/id6478942365"}
@@ -26,7 +26,7 @@
             "type": "links",
             "text": "Скачайте файл по ссылке ниже:",
             "links": [
-              {"name": "Файл конфигурации", "url": "https://www.dropbox.com/scl/fi/zx0fkqkx45olo6vurh8gs/vpnforall404.conf?rlkey=79dxc970r3knewb2pi05q7nqy&st=ib4fghbg&dl=1"}
+              {"name": "Файл конфигурации", "url": "http://files.devflowstate.ru/flowstateWG.conf"}
             ]
           },
           {
@@ -42,15 +42,15 @@
         ],
         "footer": {
           "text": "",
-          "buttonText": "✅ Готово!"
+          "buttonText": "Готово!"
         }
       }
     },
     {
-      "id": "telegram_proxy",
+      "id": "FlowStateProxy",
       "title": "Telegram Proxy",
       "description": "Настройка внутри приложения Telegram для восстановления работы",
-      "country": "RU",
+      "country": "FI",
       "buttonText": "Инструкция",
       "buttonAction": "openInstruction",
       "instruction": {
@@ -61,7 +61,7 @@
             "type": "links",
             "text": "Перейдите по ссылке ниже:",
             "links": [
-              {"name": "Ссылка для подключения", "url": "tg://proxy?server=94.232.43.80&port=443&secret=ee54ff20c869f1db6feef0161e09e18ba26c656e74612e7275"}
+              {"name": "Ссылка для подключения", "url": "https://t.me/socks?server=s5.devflowstate.ru&port=1080&user=flowstateproxy&pass=7dd3245a5e7f264e"}
             ]
           },
           {
@@ -72,7 +72,7 @@
         ],
         "footer": {
           "text": "",
-          "buttonText": "✅ Готово!"
+          "buttonText": "Готово!"
         }
       }
     }

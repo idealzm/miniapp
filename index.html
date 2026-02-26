@@ -6,24 +6,26 @@
         <meta name="theme-color" content="#0f0f0f" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <title>Обход блокировок</title>
+        <title>flowstatevpn</title>
         <link rel="stylesheet" href="styles.css" />
         <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     </head>
     <body>
         <div class="container">
             <header class="header">
-                <h1>🔓 Обход блокировок</h1>
-                <p class="subtitle">
-                    Бесплатные сервисы
-                </p>
-                <button id="snowToggle" class="snow-toggle" title="Включить/выключить снег">❄️</button>
+                <img src="logo.svg" alt="flowstatelogo" class="logo" />
             </header>
 
             <main class="content">
                 <!-- VPN Section -->
                 <section id="vpn" class="section active">
-                    <h2>Работает прямо сейчас</h2>
+                    <div class="status-badge-wrapper">
+                        <h2 class="status-badge">
+                            <span class="status-indicator"></span>
+                            Работает сейчас
+                        </h2>
+                        <button id="snowToggle" class="snow-toggle" title="Включить/выключить снег">❄️</button>
+                    </div>
                     <div class="cards-grid" id="cardsContainer">
                         <!-- Карточки загружаются из data.json -->
                     </div>
