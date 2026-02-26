@@ -691,4 +691,11 @@ body.modal-open {
     overflow: hidden;
     position: fixed;
     width: 100%;
+    top: 0;
+    left: 0;
+}
+
+html.modal-open {
+    overflow: hidden;
+    touch-action: none;
 }

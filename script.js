@@ -402,6 +402,10 @@ function openInstruction(cardId) {
 
     // Блокировка прокрутки body
     document.body.classList.add('modal-open');
+    document.documentElement.classList.add('modal-open');
+
+    // Сохраняем текущую позицию прокрутки
+    window.scrollY;
 
     // Dim the snow
     const snowContainer = document.getElementById('snowContainer');
@@ -448,6 +452,7 @@ function closeInstruction() {
 
         // Восстановление прокрутки body
         document.body.classList.remove('modal-open');
+        document.documentElement.classList.remove('modal-open');
 
         // Restore snow brightness
         const snowContainer = document.getElementById('snowContainer');
@@ -479,6 +484,24 @@ window.onclick = function(event) {
 const closeBtn = document.querySelector('.modal-close');
 if (closeBtn) {
     closeBtn.addEventListener('click', closeInstruction);
+}
+
+// Блокировка прокрутки вне модального окна
+const modal = document.getElementById('instructionModal');
+if (modal) {
+    modal.addEventListener('touchmove', (e) => {
+        // Разрешаем прокрутку только внутри modal-body
+        if (!e.target.closest('.modal-body')) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    modal.addEventListener('wheel', (e) => {
+        // Разрешаем прокрутку только внутри modal-body
+        if (!e.target.closest('.modal-body')) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 }
 
 // Keyboard navigation
