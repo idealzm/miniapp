@@ -400,6 +400,9 @@ function openInstruction(cardId) {
         modal.classList.add('active');
     }
 
+    // Блокировка прокрутки body
+    document.body.classList.add('modal-open');
+
     // Dim the snow
     const snowContainer = document.getElementById('snowContainer');
     if (snowContainer) {
@@ -442,6 +445,9 @@ function closeInstruction() {
         if (modalContent) {
             modalContent.classList.remove('closing');
         }
+
+        // Восстановление прокрутки body
+        document.body.classList.remove('modal-open');
 
         // Restore snow brightness
         const snowContainer = document.getElementById('snowContainer');
