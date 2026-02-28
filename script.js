@@ -180,7 +180,12 @@ if (tg && tg.setHeaderColor && typeof tg.setHeaderColor === 'function') {
 // Initialize snow toggle button
 const snowToggle = document.getElementById('snowToggle');
 if (snowToggle) {
-    snowToggle.addEventListener('click', toggleSnow);
+    snowToggle.addEventListener('click', () => {
+        if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+            tg.HapticFeedback.impactOccurred('light');
+        }
+        toggleSnow();
+    });
 
     // Set button size to match status badge height
     const statusBadge = document.querySelector('.status-badge');
@@ -282,7 +287,19 @@ async function loadCards() {
         // Attach event listeners to dynamically created buttons
         container.querySelectorAll('[data-action="openInstruction"]').forEach(btn => {
             btn.addEventListener('click', () => {
+                if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                    tg.HapticFeedback.impactOccurred('light');
+                }
                 openInstruction(btn.getAttribute('data-card-id'));
+            });
+        });
+
+        // Add haptic feedback to website buttons
+        container.querySelectorAll('.btn-secondary').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                    tg.HapticFeedback.impactOccurred('light');
+                }
             });
         });
     } catch (error) {
@@ -412,6 +429,34 @@ function openInstruction(cardId) {
         ${footerHtml}
     `;
 
+    // Add haptic feedback to platform buttons
+    instructionBody.querySelectorAll('.platform-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        });
+    });
+
+    // Add haptic feedback to copy buttons
+    instructionBody.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        });
+    });
+
+    // Add haptic feedback to footer button
+    const footerBtn = instructionBody.querySelector('.btn-footer');
+    if (footerBtn) {
+        footerBtn.addEventListener('click', () => {
+            if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        });
+    }
+
     const modal = document.getElementById('instructionModal');
     if (modal) {
         modal.classList.add('active');
@@ -500,7 +545,12 @@ window.onclick = function(event) {
 // Close modal on close button click
 const closeBtn = document.querySelector('.modal-close');
 if (closeBtn) {
-    closeBtn.addEventListener('click', closeInstruction);
+    closeBtn.addEventListener('click', () => {
+        if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+            tg.HapticFeedback.impactOccurred('light');
+        }
+        closeInstruction();
+    });
 }
 
 // Copy text to clipboard with toast notification
