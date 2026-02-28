@@ -395,10 +395,11 @@ function openInstruction(cardId) {
             else if (step.type === 'copy' && step.items) {
                 const copyButtons = step.items
                     .filter(item => item && item.text)
-                    .map(item => {
-                        const copyText = escapeHtml(item.text);
+                    .map((item, index) => {
+                        const copyText = item.text;
                         const buttonLabel = item.label ? escapeHtml(item.label) : 'Скопировать';
-                        return `<button class="copy-btn" onclick="copyToClipboard('${copyText.replace(/'/g, "\\'")}')"><span class="icon">📋</span>${buttonLabel}</button>`;
+                        const encodedText = encodeURIComponent(copyText);
+                        return `<button class="copy-btn" data-copy="${encodedText}"><span class="icon">📋</span>${buttonLabel}</button>`;
                     })
                     .join('');
 
@@ -443,6 +444,10 @@ function openInstruction(cardId) {
         btn.addEventListener('click', () => {
             if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
                 tg.HapticFeedback.impactOccurred('light');
+            }
+            const encodedText = btn.getAttribute('data-copy');
+            if (encodedText) {
+                copyToClipboard(decodeURIComponent(encodedText));
             }
         });
     });
