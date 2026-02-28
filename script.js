@@ -374,6 +374,23 @@ function openInstruction(cardId) {
                     <p>${parseMarkdown(step.text)}</p>
                 `;
             }
+            // Handle copy step
+            else if (step.type === 'copy' && step.items) {
+                const copyButtons = step.items
+                    .filter(item => item && item.text)
+                    .map(item => {
+                        const copyText = escapeHtml(item.text);
+                        const buttonLabel = item.label ? escapeHtml(item.label) : 'Скопировать';
+                        return `<button class="copy-btn" onclick="copyToClipboard('${copyText.replace(/'/g, "\\'")}')"><span class="icon">📋</span>${buttonLabel}</button>`;
+                    })
+                    .join('');
+
+                stepsHtml += `
+                    <h4>${escapeHtml(step.title)}</h4>
+                    ${step.text ? `<p class="platform-text">${parseMarkdown(step.text)}</p>` : ''}
+                    <div class="platforms-grid">${copyButtons}</div>
+                `;
+            }
         });
     }
 
@@ -484,6 +501,68 @@ window.onclick = function(event) {
 const closeBtn = document.querySelector('.modal-close');
 if (closeBtn) {
     closeBtn.addEventListener('click', closeInstruction);
+}
+
+// Copy text to clipboard with toast notification
+function copyToClipboard(text, buttonElement) {
+    if (!text) return;
+
+    // Copy using modern API with fallback
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showToast).catch(fallbackCopy);
+    } else {
+        fallbackCopy();
+    }
+
+    function fallbackCopy() {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast();
+        } catch (err) {
+            console.error('Failed to copy text:', err);
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function showToast() {
+        // Remove existing toast if any
+        const existingToast = document.querySelector('.toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = '<span class="toast-icon">✓</span><span>Скопировано</span>';
+        document.body.appendChild(toast);
+
+        // Trigger reflow for animation
+        toast.offsetHeight;
+
+        // Show toast
+        toast.classList.add('show');
+
+        // Haptic feedback
+        if (tg && tg.HapticFeedback && typeof tg.HapticFeedback.notificationOccurred === 'function') {
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        // Hide after 2 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    }
 }
 
 // Блокировка прокрутки вне модального окна

@@ -662,6 +662,75 @@ code {
     transform: translateY(0);
 }
 
+/* Copy button */
+.copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,255,200,0.25);
+    background: linear-gradient(145deg, #0f2e2e, #0b2323);
+    color: #3fffd2;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    min-height: 44px;
+    width: 100%;
+    text-align: center;
+}
+
+.copy-btn:hover {
+    background: linear-gradient(145deg, #134040, #0e2f2f);
+    border-color: rgba(0,255,200,0.5);
+    box-shadow: 0 0 12px rgba(0,255,200,0.15);
+}
+
+.copy-btn:active {
+    transform: scale(0.98);
+}
+
+.copy-btn .icon {
+    font-size: 16px;
+}
+
+/* Toast notification */
+.toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,255,200,0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 10001;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    max-width: calc(100% - 32px);
+    text-align: center;
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
