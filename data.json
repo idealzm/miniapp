@@ -3,7 +3,7 @@
     {
       "id": "FlowStateWG",
       "title": "AmneziaWG",
-      "description": "Простой и быстрый VPN для любых устройств.",
+      "description": "Быстрый и скрытный VPN.",
       "country": "FI",
       "buttonText": "Инструкция",
       "buttonAction": "openInstruction",
@@ -49,7 +49,7 @@
     {
       "id": "FlowStateProxy",
       "title": "Telegram Proxy",
-      "description": "Настройка внутри приложения Telegram для восстановления работы",
+      "description": "Для стабильной работы Telegram без включения VPN.",
       "country": "FI",
       "buttonText": "Инструкция",
       "buttonAction": "openInstruction",
@@ -68,32 +68,6 @@
             "title": "Шаг 2",
             "type": "text",
             "text": "Нажмите на кнопку `«Подключиться»` в открывшемся окне."
-          }
-        ],
-        "footer": {
-          "text": "",
-          "buttonText": "Готово!"
-        }
-      }
-    },
-    {
-      "id": "Hysteria2",
-      "title": "NEW! Hysteria",
-      "description": "Простой и быстрый VPN для любых устройств.",
-      "country": "FI",
-      "buttonText": "Инструкция",
-      "buttonAction": "openInstruction",
-      "instruction": {
-        "title": "Инструкция по настройке",
-        "steps": [
-          {
-            "title": "Шаг 4: Ключ доступа",
-            "type": "copy",
-            "text": "Нажмите кнопку, чтобы скопировать ключ:",
-            "items": [
-              {"label": "🔑 Ключ доступа", "text": "vpn://key@server:port"},
-              {"label": "📝 Пароль", "text": "mySecretPassword123"}
-            ]
           }
         ],
         "footer": {

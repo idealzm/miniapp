@@ -279,33 +279,6 @@ code {
     box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
 }
 
-.country-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 8px;
-    line-height: 1;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-    cursor: default;
-    text-transform: uppercase;
-    color: var(--text-primary);
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.country-badge:hover {
-    border-color: var(--accent);
-    background: var(--bg-card);
-    transform: scale(1.05);
-}
-
 .card p {
     color: var(--text-secondary);
     font-size: 13px;
@@ -536,6 +509,20 @@ code {
     margin-top: 0;
 }
 
+/* Subtitle for dividing sections within a step */
+.modal-body h5 {
+    font-size: 14px;
+    margin: 20px 0 10px;
+    color: #3fffd2;
+    font-weight: 600;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-body h5:first-child {
+    margin-top: 0;
+}
+
 .modal-body ol {
     color: var(--text-secondary);
     padding-left: 20px;
@@ -693,6 +680,10 @@ code {
 
 .copy-btn .icon {
     font-size: 16px;
+}
+
+.copy-btn:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
 }
 
 /* Toast notification */

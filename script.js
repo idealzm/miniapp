@@ -13,13 +13,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Get country code
-function getCountryInfo(countryCode) {
-    if (!countryCode || typeof countryCode !== 'string') return null;
-    const code = countryCode.toUpperCase();
-    return { code };
-}
-
 // Snow effect
 let snowInterval;
 let isSnowing = false;
@@ -149,7 +142,9 @@ function toggleSnow() {
 function parseMarkdown(text) {
     if (!text) return '';
     
-    let html = text
+    let html = String(text)
+        // Subtitle: ### text
+        .replace(/### (.+?)$/gm, '<h5>$1</h5>')
         // Bold: **text** or __text__
         .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
         .replace(/__(.+?)__/g, '<b>$1</b>')
@@ -163,7 +158,7 @@ function parseMarkdown(text) {
         // Line breaks: \n or <br>
         .replace(/\n/g, '<br>')
         .replace(/<br>/g, '<br>');
-    
+
     return html;
 }
 
@@ -241,7 +236,17 @@ async function loadCards() {
             return;
         }
 
-        data.cards.forEach(card => {
+        // Sort cards: NEW! cards first, then others
+        const sortedCards = [...data.cards].sort((a, b) => {
+            const aHasNew = a.title && a.title.includes('NEW!');
+            const bHasNew = b.title && b.title.includes('NEW!');
+            
+            if (aHasNew && !bHasNew) return -1; // a before b
+            if (!aHasNew && bHasNew) return 1;  // b before a
+            return 0; // keep original order
+        });
+
+        sortedCards.forEach(card => {
             // Store instruction data
             if (card.instruction) {
                 instructionsData[card.id] = card.instruction;
@@ -257,12 +262,6 @@ async function loadCards() {
                 ? `<span class="new-badge">NEW!</span> ${escapeHtml(card.title.replace('NEW! ', ''))}`
                 : escapeHtml(card.title);
 
-            // Country badge (код страны)
-            const countryInfo = getCountryInfo(card.country);
-            const countryBadge = countryInfo
-                ? `<span class="country-badge" title="Страна: ${countryInfo.code}">${countryInfo.code}</span>`
-                : '';
-
             // Build button HTML
             let buttonsHtml = '';
             if (card.buttonText && card.buttonAction) {
@@ -275,7 +274,6 @@ async function loadCards() {
             cardElement.innerHTML = `
                 <div class="card-header">
                     <h3>${titleHtml}</h3>
-                    ${countryBadge}
                 </div>
                 <p>${parseMarkdown(card.description)}</p>
                 <div class="card-actions">${buttonsHtml}</div>
@@ -375,23 +373,7 @@ function openInstruction(cardId) {
                     <div class="platforms-grid">${linkButtons}</div>
                 `;
             }
-            // Handle regular list step
-            else if (step.type === 'list' || step.items) {
-                stepsHtml += `
-                    <h4>${escapeHtml(step.title)}</h4>
-                    <ol>
-                        ${(step.items || []).map(item => `<li>${parseMarkdown(item)}</li>`).join('')}
-                    </ol>
-                `;
-            }
-            // Handle text step
-            else if (step.type === 'text') {
-                stepsHtml += `
-                    <h4>${escapeHtml(step.title)}</h4>
-                    <p>${parseMarkdown(step.text)}</p>
-                `;
-            }
-            // Handle copy step
+            // Handle copy step (must be before list check because both have items)
             else if (step.type === 'copy' && step.items) {
                 const copyButtons = step.items
                     .filter(item => item && item.text)
@@ -407,6 +389,48 @@ function openInstruction(cardId) {
                     <h4>${escapeHtml(step.title)}</h4>
                     ${step.text ? `<p class="platform-text">${parseMarkdown(step.text)}</p>` : ''}
                     <div class="platforms-grid">${copyButtons}</div>
+                `;
+            }
+            // Handle regular list step
+            else if (step.type === 'list' || step.items) {
+                let listHtml = '';
+                let currentSection = [];
+                let currentSubtitle = '';
+                
+                (step.items || []).forEach(item => {
+                    if (!item) return;
+                    
+                    // Check if item starts with ### (subtitle)
+                    const subtitleMatch = item.match(/^### (.+)$/);
+                    if (subtitleMatch) {
+                        // Render previous section if exists
+                        if (currentSection.length > 0) {
+                            listHtml += `<ol>${currentSection.map(i => `<li>${parseMarkdown(i || '')}</li>`).join('')}</ol>`;
+                            currentSection = [];
+                        }
+                        // Add subtitle
+                        currentSubtitle = subtitleMatch[1];
+                        listHtml += `<h5>${escapeHtml(currentSubtitle)}</h5>`;
+                    } else {
+                        currentSection.push(item);
+                    }
+                });
+                
+                // Render last section
+                if (currentSection.length > 0) {
+                    listHtml += `<ol>${currentSection.map(i => `<li>${parseMarkdown(i || '')}</li>`).join('')}</ol>`;
+                }
+                
+                stepsHtml += `
+                    <h4>${escapeHtml(step.title)}</h4>
+                    ${listHtml}
+                `;
+            }
+            // Handle text step
+            else if (step.type === 'text') {
+                stepsHtml += `
+                    <h4>${escapeHtml(step.title)}</h4>
+                    <p>${parseMarkdown(step.text || '')}</p>
                 `;
             }
         });
