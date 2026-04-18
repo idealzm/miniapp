@@ -1,0 +1,12 @@
+{
+    "Name": "RoscomVPN",
+    "GlobalProxy": "true",
+    "RemoteDNSType": "DoH",
+    "RemoteDNSDomain": "https://cloudflare-dns.com/dns-query",
+    "RemoteDNSIP": "1.1.1.1",
+    "Geoipurl": "https://example.com/geoip.dat",
+    "Geositeurl": "https://example.com/geosite.dat",
+    "DirectSites": ["geosite:ru"],
+    "DirectIp": ["geoip:ru"],
+    "DomainStrategy": "IPIfNonMatch"
+}
